@@ -78,6 +78,21 @@ const login = async (req, res) => {
     }
 };
 
+// Get User functionality
+const getUsers = async (req, res) => {
+    let users;
+    try {
+        users = await User.find();
+    } catch (err) {
+        return new Error(err);
+    }
+    if (!users) {
+        return res.status(404).json({ messsage: "Users Not FOund" });
+    }
+    return res.status(200).json({ users });
+};
+
+// Logout functionality
 const logout = async (req, res) => {
     try {
         res.clearCookie("token")
@@ -86,6 +101,8 @@ const logout = async (req, res) => {
     catch (err) {
         console.log(err);
     }
-}
+};
 
-module.exports = { register, login, logout }; 
+
+
+module.exports = { register, login, getUsers, logout }; 
