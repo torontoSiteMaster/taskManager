@@ -78,8 +78,8 @@ const login = async (req, res) => {
     }
 };
 
-// Get User functionality
-const getUsers = async (req, res) => {
+// Get all Users functionality
+const getAllUsers = async (req, res) => {
     let users;
     try {
         users = await User.find();
@@ -105,4 +105,4 @@ const logout = async (req, res) => {
 
 
 
-module.exports = { register, login, getUsers, logout }; 
+module.exports = { register, login, getAllUsers, logout }; 
