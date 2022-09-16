@@ -2,14 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const router = require('./routes/user-routes');
+const userRoutes = require('./routes/user-routes');
 
 dotenv.config();
 
 /* -------------------
  Create express app
 ---------------------- */
-const app = express()
+const app = express();
 
 // DB connection
 mongoose.connect(process.env.DATABASE, {
@@ -29,7 +29,7 @@ app.use(cors())
 app.use(express.json())
 
 // 3. User Route
-app.use('/api', router);
+app.use('/api/user', userRoutes);
 
 // PORT Listener
 const PORT = process.env.PORT || 4000;
