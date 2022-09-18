@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { redirect } from 'react-router';
+import { useNavigate } from "react-router-dom";
 import {
   MDBContainer,
   MDBTabs,
@@ -10,6 +12,7 @@ import {
 
 function App() {
 
+  const navigate = useNavigate();
   const [justifyActive, setJustifyActive] = useState('tab1');;
   const handleJustifyClick = (value) => {
     if (value === justifyActive) {
@@ -18,6 +21,15 @@ function App() {
 
     setJustifyActive(value);
   };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    navigate('/')
+  } 
+  const handleSingUp = (e) => {
+    e.preventDefault();
+    navigate('/')
+  } 
 
   return (
 
@@ -60,7 +72,7 @@ function App() {
             <a href="!#">Forgot password?</a>
           </div>
 
-          <MDBBtn className="mb-4 w-100">Sign in</MDBBtn>
+          <MDBBtn className="mb-4 w-100" onClick={(e)=>handleLogin(e)}>Sign in</MDBBtn>
           <p className="text-center">Don't have an account? <a href="#!">Register</a></p>
 
         </MDBTabsPane>
@@ -78,7 +90,7 @@ function App() {
             <MDBCheckbox name='flexCheck' id='flexCheckDefault' label='I have read and agree to the terms' />
           </div> */}
 
-          <MDBBtn className="mb-4 w-100">Sign up</MDBBtn>
+          <MDBBtn className="mb-4 w-100" onClick={(e)=>handleSingUp(e)}>Sign up</MDBBtn>
 
         </MDBTabsPane>
 
