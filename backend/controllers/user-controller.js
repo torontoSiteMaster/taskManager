@@ -7,8 +7,9 @@ const { hashPassword, comparePassword } = require('../utils/auth');
 const register = async (req, res) => {
     try {
         console.log(req.body);
-        const { firstname, lastname, email, password } = req.body;
+        const { username, firstname, lastname, email, password } = req.body;
         // Validation
+        if (!username) return res.status(400).send('User Name is required!');
         if (!firstname) return res.status(400).send('First Name is required!');
         if (!lastname) return res.status(400).send('Last Name is required!');
         if (!email) return res.status(400).send('Email is required!');
@@ -18,18 +19,17 @@ const register = async (req, res) => {
         // Mongoose will not execute a query until then or exec has been called upon it.
         let userExists = await User.findOne({ email }).exec();
         if (userExists) return res.status(400).send('User / Email already exists!');
-        // Assigning Hashed Password calling function
+        // Else, Assigning Hashed Password calling function
         const hashedPassword = await hashPassword(password);
-        console.log(firstname);
         // Register User
         const user = new User({
+            username,
             firstname,
             lastname,
             email,
             password: hashedPassword
         })
         await user.save();
-        console.log("Saved User", user);
         return res.json({ ok: true });
     } catch (err) {
         console.log(err);
@@ -41,7 +41,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
 
     try {
-        // console.log(req.body)
         const { email, password } = req.body
         // User exists check
         const user = await User.findOne({ email }).exec();
@@ -78,6 +77,61 @@ const login = async (req, res) => {
     }
 };
 
+// Update User functionality
+const updateUser = async (req, res) => {
+
+    try {
+        const { username, firstname, lastname, email, password } = req.body;
+        const hashedPassword = await hashPassword(password);
+        const userObj = {
+            username,
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword
+        };
+        await User.updateOne({ _id: req.params.id }, {
+            $set: userObj
+        }).then(
+            () => {
+                res.status(201).json({
+                    message: 'User updated successfully!'
+                });
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send("Error! Please try again.")
+    }
+};
+// Delete User functionality
+const deleteUser = async (req, res) => {
+    try {
+        await User.deleteOne({ _id: req.params.id }).then(
+            () => {
+                res.status(201).json({
+                    message: 'User deleted successfully!'
+                });
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send("Error! Please try again.")
+    }
+};
+
 // Get all Users functionality
 const getAllUsers = async (req, res) => {
     let users;
@@ -87,8 +141,12 @@ const getAllUsers = async (req, res) => {
         return new Error(err);
     }
     if (!users) {
-        return res.status(404).json({ messsage: "Users Not FOund" });
+        return res.status(404).json({ messsage: "Users Not Found" });
     }
+    // excluding password from the array of users collection
+    users.forEach(doc => {
+        doc.password = undefined;
+    });
     return res.status(200).json({ users });
 };
 
@@ -103,6 +161,4 @@ const logout = async (req, res) => {
     }
 };
 
-
-
-module.exports = { register, login, getAllUsers, logout }; 
+module.exports = { register, login, getAllUsers, updateUser, deleteUser, logout }; 
