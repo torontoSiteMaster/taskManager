@@ -37,6 +37,7 @@ export default function App() {
 
 
   return (
+    <div>
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer>
         <MDBNavbarToggler
@@ -53,7 +54,7 @@ export default function App() {
           <MDBNavbarNav fullWidth={false} className='mb-2 mb-lg-0'>
             <MDBNavbarItem>
               <MDBNavbarLink active aria-current='page' href='#'>
-                Home
+              <MDBIcon fas icon="home"  className='ms-1'  size='1x'  />  
               </MDBNavbarLink>
             </MDBNavbarItem>
             <MDBNavbarItem>
@@ -72,7 +73,7 @@ export default function App() {
         </MDBCollapse>
       </MDBContainer>
     </MDBNavbar>
-
+    </div>
   );
 
 }
