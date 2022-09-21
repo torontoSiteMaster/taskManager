@@ -133,6 +133,22 @@ const deleteUser = async (req, res) => {
 };
 
 // Get all Users functionality
+const getUser = async (req, res) => {
+    let user;
+    try {
+        user = await User.findOne({ _id: req.params.id }).exec();
+    } catch (err) {
+        return new Error(err);
+    }
+    if (!user) {
+        return res.status(404).json({ messsage: "User Not Found" });
+    }
+    // excluding password from the array of users collection
+    user.password = undefined;
+    return res.status(200).json({ user });
+};
+
+// Get all Users functionality
 const getAllUsers = async (req, res) => {
     let users;
     try {
@@ -161,4 +177,4 @@ const logout = async (req, res) => {
     }
 };
 
-module.exports = { register, login, getAllUsers, updateUser, deleteUser, logout }; 
+module.exports = { register, login, getUser, getAllUsers, updateUser, deleteUser, logout }; 
