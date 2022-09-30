@@ -1,4 +1,10 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+/* ----------- */
+/* Material UI */
+/* ----------- */
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,11 +18,17 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { logoutUser } from '../../../redux/actions/userActions';
+
+const pages = ['Users', 'Tasks'];
+const settings = ['Profile', 'Account', 'Logout'];
 
 const ResponsiveAppBar = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -27,36 +39,75 @@ const ResponsiveAppBar = () => {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
+    const handleCloseNavMenu = (e) => {
+        console.log(e.currentTarget.innerText);
+        /* User MenuItem - selected */
+        const selectedNavMenu = e.currentTarget.innerText;
+
+        switch (selectedNavMenu) {
+            case 'Users':
+                navigate('/listusers');
+                break;
+            case 'Tasks':
+                console.log('tasks');
+                break;
+
+            default:
+                setAnchorElNav(null);
+        }
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
+    const handleCloseUserMenu = (e) => {
+        console.log(e.currentTarget.innerText);
+        /* User MenuItem - selected */
+        const selectedMenuItem = e.currentTarget.innerText;
+        switch (selectedMenuItem) {
+            case 'Profile':
+                console.log('profilne');
+                break;
+            case 'Account':
+                console.log('account');
+                break;
+            case 'Logout':
+                if (window.confirm('Are you sure?')) {
+                    /* action dispatch - redux */
+                    dispatch(logoutUser(navigate));
+                } else {
+                    // Do nothing!
+                    setAnchorElUser(null);
+                }
+                break;
+            default:
+                setAnchorElUser(null);
+        }
     };
 
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
+                    <div style={{ display: 'flex' }}>
+
+                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            LOGO
+                        </Typography>
+                    </div>
+
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
@@ -128,7 +179,26 @@ const ResponsiveAppBar = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+
+                                <ArrowDropDownIcon sx={{ display: { md: 'flex' }, mr: 1, color: '#fffddd' }} />
+                                <Typography
+                                    variant="h6"
+                                    noWrap
+                                    component="a"
+                                    href="/"
+                                    sx={{
+                                        mr: 2,
+                                        display: { xs: 'none', sm: 'flex' },
+                                        fontFamily: 'monospace',
+                                        fontWeight: 700,
+                                        letterSpacing: '.1rem',
+                                        color: '#fffddd',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    {user.lastname}
+                                </Typography>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -152,6 +222,9 @@ const ResponsiveAppBar = () => {
                                     <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
+                            {/* <MenuItem onClick={handleCloseUserMenu}>
+                                <Typography textAlign="center">logout</Typography>
+                            </MenuItem> */}
                         </Menu>
                     </Box>
                 </Toolbar>

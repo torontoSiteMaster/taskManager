@@ -1,5 +1,13 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
+
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+/* ----------- */
+/* Material UI */
+/* ----------- */
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,11 +20,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+/* ----------- */
 import Copyright from './Copyright';
+import { loginUser } from '../../redux/actions/userActions';
 
 const theme = createTheme();
 
 export default function Login() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [errorFlagForSubmit, setErrorFlagForSubmit] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState(null);
 
     const [rememberMe, setRememberMe] = React.useState(false);
 
@@ -27,11 +41,20 @@ export default function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        const values = {
             email: data.get('email'),
             password: data.get('password'),
             rememberMe
-        });
+        };
+        /* action dispatch - redux */
+        dispatch(
+            loginUser(
+                values,
+                setErrorFlagForSubmit,
+                setErrorMessage,
+                navigate
+            )
+        );
     };
 
     return (
@@ -52,7 +75,17 @@ export default function Login() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    {
+                        errorFlagForSubmit ?
+                            <Snackbar open={true} autoHideDuration={6000}>
+                                <Alert variant="filled" severity="error" sx={{ width: '100%' }}>
+                                    Error! {errorMessage}.
+                                </Alert>
+                            </Snackbar>
+                            :
+                            null
+                    }
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required

@@ -54,7 +54,7 @@ const login = async (req, res) => {
             const token = jwt.sign(
                 { _id: user._id },
                 process.env.JWT_KEY,
-                { expiresIn: "3d" }
+                { expiresIn: "1m" }
             )
             // send / return user and jwt to the client
             // excluding hashed password
@@ -174,6 +174,7 @@ const logout = async (req, res) => {
     }
     catch (err) {
         console.log(err);
+        return res.status(400).send("Error! Please try again.");
     }
 };
 

@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
+import { useDispatch } from 'react-redux';
+/* ----------- */
+/* Material UI */
+/* ----------- */
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Link } from "react-router-dom";
@@ -9,58 +11,83 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-/* import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox'; 
-import Link from '@mui/material/Link';*/
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+/* ----------- */
 import Copyright from './Copyright';
+import { registerUser } from '../../redux/actions/userActions';
 
 const theme = createTheme();
 
 export default function Register() {
-
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [successFlag, setSuccessFlag] = React.useState(false)
-    const [errorFlag, setErrorFlag] = React.useState(false)
-
-    /* const validateInput = (values) => {
-        if (values.password !== values.confir
-
-    } */
+    const [successFlagForSubmit, setSuccessFlagForSubmit] = React.useState(false);
+    const [errorFlagForSubmit, setErrorFlagForSubmit] = React.useState(false);
+    const [errorEmailFormat, setErrorEmailFormat] = React.useState(false);
+    const [errorPasswordLength, setErrorPasswordLength] = React.useState(false);
+    const [errorPasswordMatch, setErrorPasswordMatch] = React.useState(false);
 
     const handleSubmitForUserRegistration = async (event) => {
         event.preventDefault();
+        setErrorPasswordMatch(false);
+        setErrorPasswordMatch(false);
+        setErrorEmailFormat(false);
 
+        /* Input Object Creation */
         const data = new FormData(event.currentTarget);
-
         const values = {
             username: data.get('userName'),
             firstname: data.get('firstName'),
             lastname: data.get('lastName'),
             email: data.get('email'),
             password: data.get('password'),
-        }
-        /* Validation  */
-        //validateInput(values);
+        };
+        /* Validation Functionalities */
+        const validateEmailFn = (email) => {
+            const validEmailRegexExpression = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/;     /* // const validEmailRegexExpression = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; */
+            if (validEmailRegexExpression.test(email)) {
+                return true;
+            } else {
+                setErrorEmailFormat(true);
+                return false;
+            }
+        };
+        const passwordLengthFn = (password) => {
+            if (password.length < 6) {
+                setErrorPasswordLength(true);
+                return false;
+            }
+            return true;
+        };
+        const matchPasswordFn = (password, confirmPassword) => {
+            if (password !== confirmPassword) {
+                setErrorPasswordMatch(true);
+                return false;
+            }
+            return true;
+        };
+        /* Validation Function Calls */
+        const validateEmail = validateEmailFn(values.email);
+        const passwordLength = passwordLengthFn(values.password);
+        const matchPassword = matchPasswordFn(values.password, data.get('confirmPassword'));
 
-        console.log(values.username);
-        try {
-            await axios.post('/api/user/register', values)
-                .then(() => {
-                    setSuccessFlag(true);
-                    setTimeout(() => {
-                        navigate('/login');
-                    }, 3000);
-                })
-                .catch(() => setErrorFlag(true));
-        } catch ({ response }) {
-            console.log(response);
-            setErrorFlag(true);
+        /* Final Submission Code */
+        if (validateEmail && passwordLength && matchPassword) {
+            console.log("hi api");
+            /* action dispatch - redux */
+            dispatch(
+                registerUser(
+                    values,
+                    setSuccessFlagForSubmit,
+                    setErrorFlagForSubmit,
+                    navigate
+                )
+            );
         }
     };
 
@@ -83,16 +110,16 @@ export default function Register() {
                         Sign up
                     </Typography>
                     {
-                        successFlag ?
+                        successFlagForSubmit ?
                             <Snackbar open={true} autoHideDuration={6000}>
                                 <Alert severity="success" sx={{ width: '100%' }}>
-                                    This is a success message!
+                                    User Created Successfully!
                                 </Alert>
                             </Snackbar>
-                            : errorFlag ?
+                            : errorFlagForSubmit ?
                                 <Snackbar open={true} autoHideDuration={6000}>
                                     <Alert severity="error" sx={{ width: '100%' }}>
-                                        This is a error message!
+                                        Error! Try again later.
                                     </Alert>
                                 </Snackbar>
                                 :
@@ -108,7 +135,8 @@ export default function Register() {
                                     label="User Name"
                                     name="userName"
                                     autoComplete="user-name"
-                                //errorText={this.state.password_error_text}
+                                    autoFocus
+                                    onChange={() => setErrorPasswordMatch(false)}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -119,7 +147,7 @@ export default function Register() {
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
-                                    autoFocus
+                                    onChange={() => setErrorPasswordMatch(false)}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -130,6 +158,7 @@ export default function Register() {
                                     label="Last Name"
                                     name="lastName"
                                     autoComplete="family-name"
+                                    onChange={() => setErrorPasswordMatch(false)}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -141,6 +170,16 @@ export default function Register() {
                                     name="email"
                                     type="email"
                                     autoComplete="email"
+                                    onChange={() => {
+                                        setErrorPasswordMatch(false);
+                                        setErrorEmailFormat(false)
+                                    }
+                                    }
+                                    error={errorEmailFormat ? true : false}
+                                    helperText={errorEmailFormat ?
+                                        "Invalid format!"
+                                        : null
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -152,6 +191,16 @@ export default function Register() {
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
+                                    onChange={() => {
+                                        setErrorPasswordMatch(false);
+                                        setErrorPasswordLength(false);
+                                    }
+                                    }
+                                    error={errorPasswordLength ? true : false}
+                                    helperText={errorPasswordLength ?
+                                        "Password length must be atleast of 6."
+                                        : null
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -163,6 +212,12 @@ export default function Register() {
                                     type="password"
                                     id="confirmPassword"
                                     autoComplete="confirm-new-password"
+                                    onChange={() => setErrorPasswordMatch(false)}
+                                    error={errorPasswordMatch ? true : false}
+                                    helperText={errorPasswordMatch ?
+                                        "Password mismatch!"
+                                        : null
+                                    }
                                 />
                             </Grid>
                         </Grid>

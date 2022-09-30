@@ -18,6 +18,6 @@ router.get("/all-users", getAllUsers);
 router.get("/get-user/:id", getUser);
 router.put("/update/:id", updateUser);
 router.delete("/delete/:id", deleteUser);
-router.post("/logout", logout);
+router.get("/logout", logout);
 
 module.exports = router;
