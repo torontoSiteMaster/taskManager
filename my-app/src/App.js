@@ -1,13 +1,18 @@
-import logo from './logo.svg';
 import './App.css';
-import Login from './components/login';
-import Signup from './components/signup'
+// import Login from './components/login';
+// import Passward from './components/passward';
+// import Signup from './components/signup'
+import ProfileSetting from './components/profileSetting';
+// import Error from './components/error';
 
 function App() {
   return (
     <div className="App">
-     {/* <Signup /> */}
-     <Login />
+     {/* <Error /> */}
+     {/* <Passward /> */}
+     {/* <Login/> */}
+     {/* <Signup/> */}
+     <ProfileSetting />
     </div>
   );
 }
