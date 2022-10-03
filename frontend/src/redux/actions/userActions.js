@@ -43,9 +43,8 @@ export const loginUser = (credentials, setErrorFlagForSubmit, setErrorMessage, n
         setErrorMessage(response.data);
         dispatch({ type: 'LOADING', payload: false });
     }
-    // console.log(localStorage.getItem('user'));
 };
-export const logoutUser = (navigate) => async dispatch => {
+export const logoutUser = () => async dispatch => {
     dispatch({ type: 'LOADING', payload: true });
     try {
         localStorage.removeItem('user');
@@ -54,6 +53,36 @@ export const logoutUser = (navigate) => async dispatch => {
         dispatch({ type: 'LOADING', payload: false });
     } catch (error) {
         dispatch({ type: 'LOADING', payload: false });
-        //console.log(error);
+        console.log(error);
+    }
+};
+export const getUsers = () => async dispatch => {
+    dispatch({ type: 'LOADING', payload: true })
+    try {
+        const { data } = await axios.get('/api/user/all-users');
+        dispatch({
+            type: 'GET_ALL_USERS',
+            payload: data.users
+        })
+        dispatch({ type: 'LOADING', payload: false })
+    } catch (error) {
+        dispatch({ type: 'LOADING', payload: false });
+        console.log(error);
+    }
+};
+export const updateUser = (id, values, setSuccessFlagForSubmit, setErrorFlagForSubmit, navigate) => async dispatch => {
+    dispatch({ type: 'LOADING', payload: true });
+    console.log(values);
+    try {
+        //const { data } = await axios.get(`/api/user/update/${id}`);
+        //console.log('data.users');
+        /*  dispatch({
+             type: 'GET_ALL_USERS',
+             payload: data.users
+         }) */
+        dispatch({ type: 'LOADING', payload: false })
+    } catch (error) {
+        dispatch({ type: 'LOADING', payload: false });
+        console.log(error);
     }
 };

@@ -21,7 +21,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 /* ----------- */
-import Copyright from './Copyright';
 import { loginUser } from '../../redux/actions/userActions';
 
 const theme = createTheme();
@@ -56,7 +55,8 @@ export default function Login() {
             )
         );
     };
-
+    const vertical = 'top';
+    const horizontal = 'left';
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -77,8 +77,8 @@ export default function Login() {
                     </Typography>
                     {
                         errorFlagForSubmit ?
-                            <Snackbar open={true} autoHideDuration={6000}>
-                                <Alert variant="filled" severity="error" sx={{ width: '100%' }}>
+                            <Snackbar anchorOrigin={{ vertical, horizontal }} key={vertical + horizontal} open={true} autoHideDuration={6000}>
+                                <Alert variant="outlined" severity="error" sx={{ width: '100%' }}>
                                     Error! {errorMessage}.
                                 </Alert>
                             </Snackbar>
@@ -93,6 +93,7 @@ export default function Login() {
                             id="email"
                             label="Email Address"
                             name="email"
+                            type="email"
                             autoComplete="email"
                             autoFocus
                         />
@@ -132,7 +133,6 @@ export default function Login() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
         </ThemeProvider>
     );

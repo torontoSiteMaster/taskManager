@@ -40,30 +40,27 @@ const ResponsiveAppBar = () => {
     };
 
     const handleCloseNavMenu = (e) => {
-        console.log(e.currentTarget.innerText);
-        /* User MenuItem - selected */
-        const selectedNavMenu = e.currentTarget.innerText;
+        /* User MenuItem - selected (with case sensitiveness) */
+        const selectedNavMenu = e.currentTarget.innerText.toLowerCase();
 
         switch (selectedNavMenu) {
-            case 'Users':
+            case 'users':
                 navigate('/listusers');
                 break;
-            case 'Tasks':
+            case 'tasks':
                 console.log('tasks');
                 break;
-
             default:
                 setAnchorElNav(null);
         }
     };
 
     const handleCloseUserMenu = (e) => {
-        console.log(e.currentTarget.innerText);
         /* User MenuItem - selected */
         const selectedMenuItem = e.currentTarget.innerText;
         switch (selectedMenuItem) {
             case 'Profile':
-                console.log('profilne');
+                navigate('/userprofile');
                 break;
             case 'Account':
                 console.log('account');
@@ -71,7 +68,7 @@ const ResponsiveAppBar = () => {
             case 'Logout':
                 if (window.confirm('Are you sure?')) {
                     /* action dispatch - redux */
-                    dispatch(logoutUser(navigate));
+                    dispatch(logoutUser());
                 } else {
                     // Do nothing!
                     setAnchorElUser(null);
@@ -86,28 +83,24 @@ const ResponsiveAppBar = () => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <div style={{ display: 'flex' }}>
-
-                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            LOGO
-                        </Typography>
-                    </div>
-
+                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component={Link}
+                        to="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        LOGO
+                    </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
@@ -149,8 +142,8 @@ const ResponsiveAppBar = () => {
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href=""
+                        component={Link}
+                        to="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -186,7 +179,6 @@ const ResponsiveAppBar = () => {
                                     variant="h6"
                                     noWrap
                                     component="a"
-                                    href="/"
                                     sx={{
                                         mr: 2,
                                         display: { xs: 'none', sm: 'flex' },
@@ -222,9 +214,6 @@ const ResponsiveAppBar = () => {
                                     <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
-                            {/* <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">logout</Typography>
-                            </MenuItem> */}
                         </Menu>
                     </Box>
                 </Toolbar>

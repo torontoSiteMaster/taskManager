@@ -18,7 +18,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 /* ----------- */
-import Copyright from './Copyright';
 import { registerUser } from '../../redux/actions/userActions';
 
 const theme = createTheme();
@@ -34,7 +33,7 @@ export default function Register() {
 
     const handleSubmitForUserRegistration = async (event) => {
         event.preventDefault();
-        setErrorPasswordMatch(false);
+        setErrorPasswordLength(false);
         setErrorPasswordMatch(false);
         setErrorEmailFormat(false);
 
@@ -78,7 +77,6 @@ export default function Register() {
 
         /* Final Submission Code */
         if (validateEmail && passwordLength && matchPassword) {
-            console.log("hi api");
             /* action dispatch - redux */
             dispatch(
                 registerUser(
@@ -238,7 +236,6 @@ export default function Register() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
             </Container>
         </ThemeProvider>
     );

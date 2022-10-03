@@ -8,9 +8,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import Dashboard from './pages/Dashboard';
 import ListUsers from './pages/users/List';
+import EditUser from './pages/users/EditUser';
+import UserProfile from './pages/users/UserProfile';
 import Login from './components/authUser/Login';
 import Register from './components/authUser/Register';
 import PageNotFound from './components/authUser/PageNotFound';
+import Copyright from './components/Copyright';
 
 function App() {
   const { loading } = useSelector(state => state.loaderReducer);
@@ -23,8 +26,6 @@ function App() {
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
         >
-
-
           <CircularProgress color="inherit" />
         </Backdrop>
       }
@@ -36,6 +37,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/listusers" element={<ListUsers />} />
+            <Route path="/edituser/:id" element={<EditUser />} />
+            <Route path="/userprofile" element={<UserProfile />} />
           </Route>
           {/* ----------------- */}
           <Route path='/login' element={<Login />} />
@@ -43,6 +46,7 @@ function App() {
           <Route path='*' element={<PageNotFound />} />
         </Routes>
       </Router>
+      <Copyright sx={{ mb: 1, position: 'fixed', bottom: 0, width: '100%' }} />
     </div>
   );
 }
