@@ -79,17 +79,20 @@ const login = async (req, res) => {
 
 // Update User functionality
 const updateUser = async (req, res) => {
-
     try {
-        const { username, firstname, lastname, email, password } = req.body;
-        const hashedPassword = await hashPassword(password);
+        const { username, firstname, lastname } = req.body;
         const userObj = {
             username,
             firstname,
             lastname,
-            email,
-            password: hashedPassword
         };
+        /* If only password is edited */
+        if (req.body.password) {
+            const { password } = req.body;
+            const hashedPassword = await hashPassword(password);
+            userObj.password = hashedPassword;
+        }
+
         await User.updateOne({ _id: req.params.id }, {
             $set: userObj
         }).then(

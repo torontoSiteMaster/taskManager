@@ -7,13 +7,14 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import Dashboard from './pages/Dashboard';
-import ListUsers from './pages/users/List';
+import ListUsers from './pages/users/ListUsers';
 import EditUser from './pages/users/EditUser';
 import UserProfile from './pages/users/UserProfile';
 import Login from './components/authUser/Login';
 import Register from './components/authUser/Register';
 import PageNotFound from './components/authUser/PageNotFound';
 import Copyright from './components/Copyright';
+import CreateTask from './pages/tasks/CreateTask';
 
 function App() {
   const { loading } = useSelector(state => state.loaderReducer);
@@ -23,7 +24,10 @@ function App() {
       {
         loading &&
         <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          sx={{
+            color: '#fff',
+            zIndex: (theme) => theme.zIndex.drawer + 1
+          }}
           open={true}
         >
           <CircularProgress color="inherit" />
@@ -39,6 +43,7 @@ function App() {
             <Route path="/listusers" element={<ListUsers />} />
             <Route path="/edituser/:id" element={<EditUser />} />
             <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/addtask" element={<CreateTask />} />
           </Route>
           {/* ----------------- */}
           <Route path='/login' element={<Login />} />
@@ -46,7 +51,13 @@ function App() {
           <Route path='*' element={<PageNotFound />} />
         </Routes>
       </Router>
-      <Copyright sx={{ mb: 1, position: 'fixed', bottom: 0, width: '100%' }} />
+      <Copyright sx={{
+        mb: 1,
+        position: 'fixed',
+        bottom: 0,
+        width: '100%'
+      }}
+      />
     </div>
   );
 }

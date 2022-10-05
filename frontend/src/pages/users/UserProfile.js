@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
-import { blue, indigo } from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Header from '../../components/header/Header';
 import { Container, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import Title from './Title';
+import Title from '../../components/Title';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -39,7 +39,6 @@ export default function ResponsiveStack() {
                     <EditIcon sx={{ color: blue[400] }} /> Edit Profile
                 </Button>
             </Container>
-
         </div>
     );
 }

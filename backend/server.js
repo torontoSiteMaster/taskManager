@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/user-routes');
+const taskRoutes = require('./routes/task-routes');
 
 dotenv.config();
 
@@ -28,8 +29,11 @@ app.use(cors())
 // 2. The express.json() function is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser.
 app.use(express.json())
 
-// 3. User Route
+// 3. ROUTES
+// User Route
 app.use('/api/user', userRoutes);
+// Task Route
+app.use('/api/task', taskRoutes);
 
 // PORT Listener
 const PORT = process.env.PORT || 4000;

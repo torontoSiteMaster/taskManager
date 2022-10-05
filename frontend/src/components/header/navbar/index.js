@@ -22,7 +22,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import { logoutUser } from '../../../redux/actions/userActions';
 
-const pages = ['Users', 'Tasks'];
+const pages = ['Users', 'Add Task'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -47,8 +47,8 @@ const ResponsiveAppBar = () => {
             case 'users':
                 navigate('/listusers');
                 break;
-            case 'tasks':
-                console.log('tasks');
+            case 'add task':
+                navigate('/addtask');
                 break;
             default:
                 setAnchorElNav(null);

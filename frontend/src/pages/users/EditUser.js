@@ -190,7 +190,7 @@ export default function EditUser() {
                                         inputProps={{ 'aria-label': 'controlled' }}
                                     />
                                     <Chip
-                                        label="Change Password? [Select/ check to update]"
+                                        label="Change Password? (Select/Check to see options)"
                                         variant="outlined" color="primary"
                                         sx={{ color: deepOrange[400] }}
                                     />

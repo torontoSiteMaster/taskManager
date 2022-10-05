@@ -74,12 +74,18 @@ export const updateUser = (id, values, setSuccessFlagForSubmit, setErrorFlagForS
     dispatch({ type: 'LOADING', payload: true });
     console.log(values);
     try {
-        //const { data } = await axios.get(`/api/user/update/${id}`);
-        //console.log('data.users');
-        /*  dispatch({
-             type: 'GET_ALL_USERS',
-             payload: data.users
-         }) */
+        await axios.put(`/api/user/update/${id}`, values)
+            .then((response) => {
+                console.log(response);
+                if (response.status === 201) {
+                    setSuccessFlagForSubmit(true);
+                    setTimeout(() => {
+                        navigate('/userprofile');
+                    }, 2000);
+                    dispatch({ type: 'LOADING', payload: false });
+                }
+            })
+            .catch(() => setErrorFlagForSubmit(true));
         dispatch({ type: 'LOADING', payload: false })
     } catch (error) {
         dispatch({ type: 'LOADING', payload: false });

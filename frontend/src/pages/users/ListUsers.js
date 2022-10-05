@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { TableContainer, TablePagination, Tooltip } from '@mui/material';
 
-import Title from './Title';
+import Title from '../../components/Title';
 import Header from '../../components/header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../../redux/actions/userActions';
@@ -76,7 +76,7 @@ export default function Users() {
             {/* <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
                 See more orders
             </Link> */}
-            <TablePagination
+            {/* <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={10} // totalRows-This is what your request should be returning in addition to the current page of rows.
@@ -84,7 +84,7 @@ export default function Users() {
                 page={0} // page
             //onPageChange={handleChangePage}
             //onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            /> */}
         </React.Fragment>
     );
 }
