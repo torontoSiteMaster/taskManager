@@ -41,9 +41,10 @@ const Dashboard = () => {
             <Container maxWidth="xl">
                 <Box sx={{
                     display: 'flex',
-                    flexFlow: 'column wrap',
-                    alignContent: 'flex-start',
-                    margin: '0.6rem auto',
+                    flexFlow: { xs: 'column wrap', sm: 'row' },
+                    alignContent: { xs: 'flex-start' },
+                    justifyContent: 'space-between',
+                    margin: '0.4rem auto',
                     gap: 0.5
                 }}
                 >

@@ -40,7 +40,7 @@ export default function CreateTask() {
                             alignItems: 'center',
                         }}
                     >
-                        <Typography variant="h5">
+                        <Typography variant="div">
                             <Title><AddIcon /> Add a new Task</Title>
                         </Typography>
 
@@ -51,49 +51,28 @@ export default function CreateTask() {
                                         //defaultValue={user.username}
                                         required
                                         fullWidth
-                                        id="userName"
-                                        label="User Name"
-                                        name="userName"
-                                        autoComplete="user-name"
-                                    //onChange={() => setErrorPasswordMatch(false)}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        //defaultValue={user.firstname}
-                                        autoComplete="given-name"
-                                        name="firstName"
-                                        required
-                                        fullWidth
-                                        id="firstName"
-                                        label="First Name"
-                                    //onChange={() => setErrorPasswordMatch(false)}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        //defaultValue={user.lastname}
-                                        required
-                                        fullWidth
-                                        id="lastName"
-                                        label="Last Name"
-                                        name="lastName"
-                                        autoComplete="family-name"
+                                        id="taskName"
+                                        label="Task Name"
+                                        name="taskName"
+                                        autoComplete="task-name"
                                     //onChange={() => setErrorPasswordMatch(false)}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Checkbox
-                                        //checked={checked}
-                                        //onChange={handleCheckForPasswordChange}
-                                        inputProps={{ 'aria-label': 'controlled' }}
-                                    />
-                                    <Chip
-                                        label="Change Password? (Select/Check to see options)"
-                                        variant="outlined" color="primary"
-                                        sx={{ color: deepOrange[400] }}
+                                    <TextField
+                                        //defaultValue={user.firstname}
+                                        autoComplete="task-description"
+                                        name="taskDescription"
+                                        required
+                                        fullWidth
+                                        id="taskDescription"
+                                        label="Task Description"
+                                        multiline={true}
+                                        rows={3}
+                                    //onChange={() => setErrorPasswordMatch(false)}
                                     />
                                 </Grid>
+
                             </Grid>
                             <Button
                                 type="submit"
