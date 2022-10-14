@@ -8,6 +8,6 @@ const {
 // Router
 router.post("/create/new", createTask);
 router.get("/all-tasks", getAllTasks);
-router.post("/assign-task", assignTaskCreate);
+router.post("/assign-task/new", assignTaskCreate);
 
 module.exports = router;
