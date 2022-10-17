@@ -1,4 +1,9 @@
 import * as React from 'react';
+
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+/* ----------- */
+import { createTask } from '../../redux/actions/taskActions';
 /* ----------- */
 /* Material UI */
 /* ----------- */
@@ -13,17 +18,30 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { deepOrange } from '@mui/material/colors';
-/* ----------- */
-import { Checkbox, Chip } from '@mui/material';
 import Header from '../../components/header/Header';
 import Title from '../../components/Title';
 
 const theme = createTheme();
 
 export default function CreateTask() {
-    const handleSubmitForCreateTask = () => {
-        console.log('create user final values');
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    /* user id to be passed to task object */
+    const userID = JSON.parse(localStorage.getItem('user'))._id;
+
+    /* State */
+    const [errorFlagForSubmit, setErrorFlagForSubmit] = React.useState(false);
+
+    const handleSubmitForCreateTask = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const values = {
+            task_name: data.get('taskName'),
+            task_description: data.get('taskDescription'),
+            user_id: userID
+        };
+        /* action dispatch - redux */
+        dispatch(createTask(values, setErrorFlagForSubmit, navigate));
     }
 
     return (
@@ -43,6 +61,17 @@ export default function CreateTask() {
                         <Typography variant="div">
                             <Title><AddIcon /> Add a new Task</Title>
                         </Typography>
+
+                        {
+                            errorFlagForSubmit ?
+                                <Snackbar open={true} autoHideDuration={6000}>
+                                    <Alert severity="error" sx={{ width: '100%' }}>
+                                        Error! Try again later.
+                                    </Alert>
+                                </Snackbar>
+                                :
+                                null
+                        }
 
                         <Box component="form" onSubmit={handleSubmitForCreateTask} sx={{ mt: 3 }}>
                             <Grid container spacing={2}>

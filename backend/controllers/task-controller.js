@@ -5,7 +5,7 @@ const createTask = async (req, res) => {
     try {
         const newTask = new Task(req.body);
         await newTask.save();
-        res.send('Task Posted Successfully')
+        res.send('Task Created Successfully')
     } catch (error) {
         return res.status(400).json(error);
     }

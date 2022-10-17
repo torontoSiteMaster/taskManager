@@ -30,7 +30,6 @@ const Dashboard = () => {
     // console.log(tasks);
     const handleViewTaskModal = (e, id) => {
         e.preventDefault();
-        console.log(id);
         setOpenModel(true);
         const task = tasks.find(task => task._id === id);
         setTaskSelectedToView(task);
@@ -68,7 +67,7 @@ const Dashboard = () => {
                                 <TableCell>Task Name</TableCell>
                                 <TableCell>Invited</TableCell>
                                 <TableCell>Status</TableCell>
-                                <TableCell colSpan={2} align="center">Actions</TableCell>
+                                <TableCell colSpan={4} align="center">Actions</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -80,6 +79,13 @@ const Dashboard = () => {
                                     <TableCell>{task.task_invited ? 'Yes' : 'No'}</TableCell>
                                     <TableCell>{task.task_status}</TableCell>
 
+                                    <TableCell align="center">
+                                        <Tooltip title="Assign Task">
+                                            <IconButton aria-label="assign">
+                                                Assign
+                                            </IconButton>
+                                        </Tooltip>
+                                    </TableCell>
                                     <TableCell align="right">
                                         <Tooltip title="View Task">
                                             <IconButton aria-label="view" onClick={e => handleViewTaskModal(e, task._id)}>

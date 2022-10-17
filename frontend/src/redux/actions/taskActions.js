@@ -1,15 +1,14 @@
 import axios from "axios";
 
-/* export const createTask = (values, setSuccessFlagForSubmit, setErrorFlagForSubmit, navigate) => async dispatch => {
+export const createTask = (values, setErrorFlagForSubmit, navigate) => async dispatch => {
     dispatch({ type: 'LOADING', payload: true });
     try {
-        await axios.post('/api/user/register', values)
+        await axios.post('/api/task/create/new', values)
             .then((response) => {
-                if (response.data.ok && response.status === 200) {
-                    setSuccessFlagForSubmit(true);
+                if (response.status === 200) {
                     setTimeout(() => {
-                        navigate('/login');
-                    }, 3000);
+                        navigate('/');
+                    }, 2000);
                     dispatch({ type: 'LOADING', payload: false });
                 }
             })
@@ -19,7 +18,8 @@ import axios from "axios";
         setErrorFlagForSubmit(true);
         dispatch({ type: 'LOADING', payload: false });
     }
-}; */
+};
+
 export const getTasks = () => async dispatch => {
     dispatch({ type: 'LOADING', payload: true })
     try {
