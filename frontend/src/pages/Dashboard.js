@@ -11,13 +11,25 @@ import ViewIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import { makeStyles } from "@mui/styles";
+
+
 import { Box, Chip, Container, Modal, TableContainer, TablePagination, Tooltip, Typography } from '@mui/material';
 
 import Title from '../components/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTasks } from '../redux/actions/taskActions';
 
+const useStyles = makeStyles({
+    assign: {
+        "&:hover": {
+            color: '#3f51b5'
+        }
+    }
+});
+
 const Dashboard = () => {
+    const classes = useStyles();
     const [openModal, setOpenModel] = useState(false);
     const [taskSelectedToView, setTaskSelectedToView] = useState({});
 
@@ -28,6 +40,8 @@ const Dashboard = () => {
         dispatch(getTasks());
     }, [dispatch]);
     // console.log(tasks);
+
+    // Custom functions
     const handleViewTaskModal = (e, id) => {
         e.preventDefault();
         setOpenModel(true);
@@ -81,8 +95,18 @@ const Dashboard = () => {
 
                                     <TableCell align="center">
                                         <Tooltip title="Assign Task">
-                                            <IconButton aria-label="assign">
-                                                Assign
+                                            <IconButton
+                                                aria-label="assign"
+                                                sx={{
+                                                    color: indigo[900],
+                                                    fontSize: '1rem',
+                                                    padding: '5px',
+                                                    border: '1px solid'
+                                                }}
+                                                component={Link}
+                                                to={`/assigntask/${task._id}`}
+                                            >
+                                                <span className={classes.assign}>Assign</span>
                                             </IconButton>
                                         </Tooltip>
                                     </TableCell>

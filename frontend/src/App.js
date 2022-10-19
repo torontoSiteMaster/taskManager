@@ -15,6 +15,7 @@ import Register from './components/authUser/Register';
 import PageNotFound from './components/authUser/PageNotFound';
 import Copyright from './components/Copyright';
 import CreateTask from './pages/tasks/CreateTask';
+import AssignTask from './pages/tasks/AssignTask';
 
 function App() {
   const { loading } = useSelector(state => state.loaderReducer);
@@ -44,6 +45,7 @@ function App() {
             <Route path="/edituser/:id" element={<EditUser />} />
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/addtask" element={<CreateTask />} />
+            <Route path="/assigntask/:id" element={<AssignTask />} />
           </Route>
           {/* ----------------- */}
           <Route path='/login' element={<Login />} />
