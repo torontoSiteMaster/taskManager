@@ -25,6 +25,20 @@ const assignTaskCreate = async (req, res) => {
         return res.status(400).json(error);
     }
 };
+// Fetch Assign Task from DB
+const getAssignTasks = async (req, res) => {
+    let assignedTasks;
+    try {
+        assignedTasks = await AssignTask.find();
+    } catch (err) {
+        return new Error(err);
+    }
+    if (!assignedTasks) {
+        return res.status(404).json({ messsage: "Not Found! No Tasks are Assigned" });
+    }
+    return res.status(200).json({ assignedTasks });
+};
+
 // Get all Tasks functionality
 const getAllTasks = async (req, res) => {
     let tasks;
@@ -39,4 +53,4 @@ const getAllTasks = async (req, res) => {
     return res.status(200).json({ tasks });
 };
 
-module.exports = { createTask, getAllTasks, assignTaskCreate }; 
+module.exports = { createTask, getAllTasks, assignTaskCreate, getAssignTasks }; 

@@ -53,3 +53,17 @@ export const getTasks = () => async dispatch => {
         console.log(error);
     }
 };
+export const getAssignedTasks = () => async dispatch => {
+    dispatch({ type: 'LOADING', payload: true })
+    try {
+        const { data } = await axios.get('/api/task/all-assigned-tasks');
+        dispatch({
+            type: 'GET_ALL_ASSIGNED_TASKS',
+            payload: data.assignedTasks
+        })
+        dispatch({ type: 'LOADING', payload: false })
+    } catch (error) {
+        dispatch({ type: 'LOADING', payload: false });
+        console.log(error);
+    }
+};

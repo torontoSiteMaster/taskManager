@@ -11,6 +11,7 @@ import ViewIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { makeStyles } from "@mui/styles";
 
 
@@ -18,13 +19,17 @@ import { Box, Chip, Container, Modal, TableContainer, TablePagination, Tooltip, 
 
 import Title from '../components/Title';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTasks } from '../redux/actions/taskActions';
+import { getAssignedTasks, getTasks } from '../redux/actions/taskActions';
 
 const useStyles = makeStyles({
     assign: {
         "&:hover": {
-            color: '#3f51b5'
+            color: '#FF8C00',
         }
+    },
+    assigned: {
+        color: '#056608',
+        fontWeight: '600'
     }
 });
 
@@ -33,15 +38,106 @@ const Dashboard = () => {
     const [openModal, setOpenModel] = useState(false);
     const [taskSelectedToView, setTaskSelectedToView] = useState({});
 
-    const { username, email } = JSON.parse(localStorage.getItem('user'));
-    const { tasks } = useSelector(state => state.tasksReducer);
+    const { _id: currentUserID, username, email, userrole } = JSON.parse(localStorage.getItem('user'));
+
     const dispatch = useDispatch();
+
     React.useEffect(() => {
         dispatch(getTasks());
+        dispatch(getAssignedTasks());
     }, [dispatch]);
-    // console.log(tasks);
+    const { tasks } = useSelector(state => state.tasksReducer);
+    const { assignedTasks } = useSelector(state => state.assignedTasksReducer);
 
-    // Custom functions
+    console.log(tasks);
+    //console.log(assignedTasks);
+
+    let tasksInfo = tasks.map(v => ({ ...v, ...assignedTasks.find(sp => sp.task_id === v._id) }))
+
+    console.log(tasksInfo);
+
+    /* Manager Dashboard - tableRows */
+    const tableRowsForManager = tasksInfo.map((task, idx) => (
+        <TableRow key={task._id}>
+            <TableCell>{++idx}</TableCell>
+            <TableCell>{task.task_name}</TableCell>
+            <TableCell>{task.task_invited ? 'Yes' : 'No'}</TableCell>
+            <TableCell>{task.task_status}</TableCell>
+
+            <TableCell align="center">
+
+                {task['task_id'] ?
+                    <span className={classes.assigned}>
+                        Assigned
+                        <AssignmentTurnedInIcon fontSize="small" />
+                    </span>
+                    :
+                    <Tooltip title="Assign Task">
+                        <IconButton
+                            aria-label="assign"
+                            sx={{
+                                color: deepOrange[900],
+                                fontSize: '1rem',
+                                padding: '5px',
+                                border: '1px solid'
+                            }}
+                            component={Link}
+                            to={`/assigntask/${task.task_id}`}
+                        >
+                            <span className={classes.assign}>Assign</span>
+                        </IconButton>
+                    </Tooltip>
+                }
+
+            </TableCell>
+            <TableCell align="right">
+                <Tooltip title="View Task">
+                    <IconButton aria-label="view" onClick={e => handleViewTaskModal(e, task.task_id)}>
+                        <ViewIcon sx={{ color: purple[400] }} />
+                    </IconButton>
+                </Tooltip>
+            </TableCell>
+            <TableCell align="center">
+                <Tooltip title="Edit">
+                    <IconButton aria-label="edit" component={Link} to={`/`}>
+                        <EditIcon sx={{ color: indigo[400] }} />
+                    </IconButton>
+                </Tooltip>
+            </TableCell>
+            <TableCell>
+                <Tooltip title="Delete">
+                    <IconButton aria-label="delete">
+                        <DeleteIcon sx={{ color: deepOrange[300] }} />
+                    </IconButton>
+                </Tooltip>
+            </TableCell>
+        </TableRow>
+    ));
+    /* Staff Dashboard - tableRows */
+    const tableRowsForStaff = tasksInfo.map((task, idx) => (
+        (currentUserID === task.assignee_user_id) ?
+            <TableRow key={task._id}>
+                <TableCell>{++idx}</TableCell>
+                <TableCell>{task.task_name}</TableCell>
+                <TableCell>{task.task_invited ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{task.task_status}</TableCell>
+
+                <TableCell align="center">
+                    <Tooltip title="View Task">
+                        <IconButton
+                            aria-label="view"
+                            onClick={e => handleViewTaskModal(e, task.task_id)}
+                        >
+                            <ViewIcon sx={{ color: purple[400] }} />
+                        </IconButton>
+                    </Tooltip>
+                </TableCell>
+            </TableRow>
+            :
+            null
+    ));
+
+    // Custom functions - View functionality
     const handleViewTaskModal = (e, id) => {
         e.preventDefault();
         setOpenModel(true);
@@ -49,7 +145,7 @@ const Dashboard = () => {
         setTaskSelectedToView(task);
     }
     return (
-        <React.Fragment>
+        <Fragment>
             <Header />
             <Container maxWidth="xl">
                 <Box sx={{
@@ -57,12 +153,17 @@ const Dashboard = () => {
                     flexFlow: { xs: 'column wrap', sm: 'row' },
                     alignContent: { xs: 'flex-start' },
                     justifyContent: 'space-between',
-                    margin: '0.4rem auto',
+                    margin: '0.4rem auto 2.5rem',
                     gap: 0.5
                 }}
                 >
                     <Chip
                         label={`USER: ${username}`}
+                        variant="contained" color="primary"
+                        sx={{ color: deepOrange[50], fontSize: '1rem' }}
+                    />
+                    <Chip
+                        label={`ROLE: ${userrole}`}
                         variant="contained" color="primary"
                         sx={{ color: deepOrange[50], fontSize: '1rem' }}
                     />
@@ -80,59 +181,13 @@ const Dashboard = () => {
                                 <TableCell>SlNo.</TableCell>
                                 <TableCell>Task Name</TableCell>
                                 <TableCell>Invited</TableCell>
+                                {/* <TableCell>Inviter/Invitee</TableCell> */}
                                 <TableCell>Status</TableCell>
                                 <TableCell colSpan={4} align="center">Actions</TableCell>
                             </TableRow>
                         </TableHead>
-
                         <TableBody>
-                            {tasks.map((task, idx) => (
-                                <TableRow key={task._id}>
-                                    <TableCell>{++idx}</TableCell>
-                                    <TableCell>{task.task_name}</TableCell>
-                                    <TableCell>{task.task_invited ? 'Yes' : 'No'}</TableCell>
-                                    <TableCell>{task.task_status}</TableCell>
-
-                                    <TableCell align="center">
-                                        <Tooltip title="Assign Task">
-                                            <IconButton
-                                                aria-label="assign"
-                                                sx={{
-                                                    color: indigo[900],
-                                                    fontSize: '1rem',
-                                                    padding: '5px',
-                                                    border: '1px solid'
-                                                }}
-                                                component={Link}
-                                                to={`/assigntask/${task._id}`}
-                                            >
-                                                <span className={classes.assign}>Assign</span>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Tooltip title="View Task">
-                                            <IconButton aria-label="view" onClick={e => handleViewTaskModal(e, task._id)}>
-                                                <ViewIcon sx={{ color: purple[400] }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Tooltip title="Edit">
-                                            <IconButton aria-label="edit" component={Link} to={`/`}>
-                                                <EditIcon sx={{ color: indigo[400] }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Tooltip title="Delete">
-                                            <IconButton aria-label="delete">
-                                                <DeleteIcon sx={{ color: deepOrange[300] }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                            {userrole === 'Manager' ? tableRowsForManager : tableRowsForStaff}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -173,7 +228,7 @@ const Dashboard = () => {
             //onPageChange={handleChangePage}
             //onRowsPerPageChange={handleChangeRowsPerPage}
             /> */}
-        </React.Fragment >
+        </Fragment >
 
     )
 }
