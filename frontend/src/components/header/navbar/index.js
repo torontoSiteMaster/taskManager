@@ -23,6 +23,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { logoutUser } from '../../../redux/actions/userActions';
 
 const pages = ['Users', 'Tasks', 'Add Task'];
+const pagesForStaff = ['Team', 'Tasks'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -82,6 +83,36 @@ const ResponsiveAppBar = () => {
         }
     };
 
+    /* Avatar functionality */
+    const stringToColor = (string) => {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let color = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.slice(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return color;
+    }
+    const stringAvatar = (name) => {
+        return {
+            sx: {
+                bgcolor: stringToColor(name),
+            },
+            children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+        };
+    }
+    const avatarNamePattern = stringAvatar(user.firstname + ' ' + user.lastname);
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -134,11 +165,19 @@ const ResponsiveAppBar = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
+                            {user.userrole === 'Staff' ?
+                                pagesForStaff.map((page) => (
+                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                        <Typography textAlign="center">{page}</Typography>
+                                    </MenuItem>
+                                ))
+                                :
+                                pages.map((page) => (
+                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                        <Typography textAlign="center">{page}</Typography>
+                                    </MenuItem>
+                                ))
+                            }
                         </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -161,24 +200,36 @@ const ResponsiveAppBar = () => {
                         LOGO
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                        {user.userrole === 'Staff' ?
+                            pagesForStaff.map((page) => (
+                                <Button
+                                    key={page}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page}
+                                </Button>
+                            ))
+                            :
+                            pages.map((page) => (
+                                <Button
+                                    key={page}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page}
+                                </Button>
+                            ))
+                        }
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        <Tooltip title={`${user.firstname} ${user.lastname}`}>
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                                <Avatar alt="User" {...avatarNamePattern} />
 
                                 <ArrowDropDownIcon sx={{ display: { md: 'flex' }, mr: 1, color: '#fffddd' }} />
-                                <Typography
+                                {/*  <Typography
                                     variant="h6"
                                     noWrap
                                     component="a"
@@ -193,7 +244,7 @@ const ResponsiveAppBar = () => {
                                     }}
                                 >
                                     {user.lastname}
-                                </Typography>
+                                </Typography> */}
                             </IconButton>
                         </Tooltip>
                         <Menu

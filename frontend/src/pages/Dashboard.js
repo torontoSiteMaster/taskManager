@@ -48,10 +48,13 @@ const Dashboard = () => {
     }, [dispatch]);
     const { tasks } = useSelector(state => state.tasksReducer);
     const { assignedTasks } = useSelector(state => state.assignedTasksReducer);
+    /* // removing _id to avoid collision while merging */
+    assignedTasks.forEach(function (v) { delete v._id });
 
     console.log(tasks);
-    //console.log(assignedTasks);
+    console.log(assignedTasks);
 
+    //let tasksInfo = assignedTasks.map(v => ({ ...v, ...tasks.find(sp => v.task_id === sp._id) }))
     let tasksInfo = tasks.map(v => ({ ...v, ...assignedTasks.find(sp => sp.task_id === v._id) }))
 
     console.log(tasksInfo);
@@ -82,7 +85,7 @@ const Dashboard = () => {
                                 border: '1px solid'
                             }}
                             component={Link}
-                            to={`/assigntask/${task.task_id}`}
+                            to={`/assigntask/${task._id}`}
                         >
                             <span className={classes.assign}>Assign</span>
                         </IconButton>
@@ -92,7 +95,7 @@ const Dashboard = () => {
             </TableCell>
             <TableCell align="right">
                 <Tooltip title="View Task">
-                    <IconButton aria-label="view" onClick={e => handleViewTaskModal(e, task.task_id)}>
+                    <IconButton aria-label="view" onClick={e => handleViewTaskModal(e, task._id)}>
                         <ViewIcon sx={{ color: purple[400] }} />
                     </IconButton>
                 </Tooltip>
@@ -126,7 +129,7 @@ const Dashboard = () => {
                     <Tooltip title="View Task">
                         <IconButton
                             aria-label="view"
-                            onClick={e => handleViewTaskModal(e, task.task_id)}
+                            onClick={e => handleViewTaskModal(e, task._id)}
                         >
                             <ViewIcon sx={{ color: purple[400] }} />
                         </IconButton>

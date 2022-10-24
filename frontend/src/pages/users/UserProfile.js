@@ -27,9 +27,10 @@ export default function ResponsiveStack() {
                 <Stack
                     spacing={{ xs: 2, sm: 4 }}
                 >
+                    <Item>User Name: {user.username}</Item>
                     <Item>Email: {user.email}</Item>
                     <Item>Name: {user.firstname} {user.lastname}</Item>
-                    <Item>User Role: {user.username}</Item>
+                    <Item>User Role: {user.userrole}</Item>
                 </Stack>
                 <Button
                     sx={{ mt: 5 }}
