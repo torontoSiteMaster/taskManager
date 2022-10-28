@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
-import { TableContainer, TablePagination, Tooltip } from '@mui/material';
+import { TableContainer, Tooltip } from '@mui/material';
 
 import Title from '../../components/Title';
 import Header from '../../components/header/Header';

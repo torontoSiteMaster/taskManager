@@ -14,6 +14,16 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
+    preceeding_task_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task',
+        required: true
+    },
+    following_task_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task',
+        required: true
+    },
     task_assigned_date: {
         type: Date,
         default: Date.now

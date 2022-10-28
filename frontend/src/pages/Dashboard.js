@@ -13,11 +13,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { makeStyles } from "@mui/styles";
-
-
-import { Box, Chip, Container, Modal, TableContainer, TablePagination, Tooltip, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import { Box, Chip, Container, Modal, TableContainer, Tooltip, Typography } from '@mui/material';
 
 import Title from '../components/Title';
+import SearchBar from './tasks/listTaskComponents/SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAssignedTasks, getTasks } from '../redux/actions/taskActions';
 
@@ -37,6 +37,7 @@ const Dashboard = () => {
     const classes = useStyles();
     const [openModal, setOpenModel] = useState(false);
     const [taskSelectedToView, setTaskSelectedToView] = useState({});
+    const [search, setSearch] = useState('');
 
     const { _id: currentUserID, username, email, userrole } = JSON.parse(localStorage.getItem('user'));
 
@@ -48,16 +49,15 @@ const Dashboard = () => {
     }, [dispatch]);
     const { tasks } = useSelector(state => state.tasksReducer);
     const { assignedTasks } = useSelector(state => state.assignedTasksReducer);
-    /* // removing _id to avoid collision while merging */
+    /* removing _id from assignedTasks, to avoid collision with tasks._id while merging */
     assignedTasks.forEach(function (v) { delete v._id });
 
-    console.log(tasks);
-    console.log(assignedTasks);
-
+    /* creating a new array combining 'tasks' and 'assignedTasks'  */
     //let tasksInfo = assignedTasks.map(v => ({ ...v, ...tasks.find(sp => v.task_id === sp._id) }))
-    let tasksInfo = tasks.map(v => ({ ...v, ...assignedTasks.find(sp => sp.task_id === v._id) }))
+    let originalTasksInfo = tasks.map(v => ({ ...v, ...assignedTasks.find(sp => sp.task_id === v._id) }))
 
-    console.log(tasksInfo);
+    /* state for tasksInfo */
+    const [tasksInfo, setTasksInfo] = useState(originalTasksInfo);
 
     /* Manager Dashboard - tableRows */
     const tableRowsForManager = tasksInfo.map((task, idx) => (
@@ -81,8 +81,8 @@ const Dashboard = () => {
                             sx={{
                                 color: deepOrange[900],
                                 fontSize: '1rem',
-                                padding: '5px',
-                                border: '1px solid'
+                                //padding: '5px',
+                                //border: '1px solid'
                             }}
                             component={Link}
                             to={`/assigntask/${task._id}`}
@@ -124,6 +124,23 @@ const Dashboard = () => {
                 <TableCell>{task.task_name}</TableCell>
                 <TableCell>{task.task_invited ? 'Yes' : 'No'}</TableCell>
                 <TableCell>{task.task_status}</TableCell>
+                <TableCell align="center">
+                    <Tooltip title="Invite Task">
+                        <IconButton
+                            aria-label="invitation"
+                            sx={{
+                                color: deepOrange[900],
+                                fontSize: '1rem',
+                                //padding: '5px',
+                                //border: '1px solid'
+                            }}
+                        //component={Link}
+                        //to={`/assigntask/${task._id}`}
+                        >
+                            <span className={classes.assign}>Invite</span>
+                        </IconButton>
+                    </Tooltip>
+                </TableCell>
 
                 <TableCell align="center">
                     <Tooltip title="View Task">
@@ -139,7 +156,24 @@ const Dashboard = () => {
             :
             null
     ));
-
+    /**********************
+    // Search functionality
+    ***********************/
+    const onSearchChange = (searchedVal) => {
+        if (searchedVal) {
+            const filteredRows = originalTasksInfo.filter((row) => {
+                return row.task_name.toLowerCase().includes(searchedVal.toLowerCase());
+            });
+            setTasksInfo(filteredRows);
+        }
+        else {
+            setTasksInfo(originalTasksInfo);
+        }
+        setSearch(searchedVal);
+    };
+    const cancelSearch = (val) => {
+        onSearchChange(val);
+    };
     // Custom functions - View functionality
     const handleViewTaskModal = (e, id) => {
         e.preventDefault();
@@ -147,6 +181,7 @@ const Dashboard = () => {
         const task = tasks.find(task => task._id === id);
         setTaskSelectedToView(task);
     }
+
     return (
         <Fragment>
             <Header />
@@ -177,23 +212,27 @@ const Dashboard = () => {
                     />
                 </Box>
                 <Title>List of Tasks</Title>
-                <TableContainer>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>SlNo.</TableCell>
-                                <TableCell>Task Name</TableCell>
-                                <TableCell>Invited</TableCell>
-                                {/* <TableCell>Inviter/Invitee</TableCell> */}
-                                <TableCell>Status</TableCell>
-                                <TableCell colSpan={4} align="center">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {userrole === 'Manager' ? tableRowsForManager : tableRowsForStaff}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Paper>
+                    <SearchBar onSearch={onSearchChange} value={search} cancelSearch={cancelSearch} />
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>SlNo.</TableCell>
+                                    <TableCell>Task Name</TableCell>
+                                    <TableCell>Invited</TableCell>
+                                    {/* <TableCell>Inviter/Invitee</TableCell> */}
+                                    <TableCell>Status</TableCell>
+                                    <TableCell colSpan={4} align="center">Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {userrole === 'Manager' ? tableRowsForManager : tableRowsForStaff}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+
             </Container>
 
             <Modal

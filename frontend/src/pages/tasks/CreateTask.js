@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 /* ----------- */
-import { createTask } from '../../redux/actions/taskActions';
+import { createTask, getTasks } from '../../redux/actions/taskActions';
 /* ----------- */
 /* Material UI */
 /* ----------- */
@@ -20,6 +20,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../../components/header/Header';
 import Title from '../../components/Title';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const theme = createTheme();
 
@@ -31,6 +32,20 @@ export default function CreateTask() {
 
     /* State */
     const [errorFlagForSubmit, setErrorFlagForSubmit] = React.useState(false);
+    const [selectedPreceedingTask, setSelectedPreceedingTask] = React.useState('');
+    const [selectedFollowingTask, setSelectedFollowingTask] = React.useState('');
+
+    React.useEffect(() => {
+        dispatch(getTasks());
+    }, [dispatch]);
+    const { tasks } = useSelector(state => state.tasksReducer);
+
+    const handleSelectedPreceedingTask = (event) => {
+        setSelectedPreceedingTask(event.target.value);
+    };
+    const handleSelectedFollowingTask = (event) => {
+        setSelectedFollowingTask(event.target.value);
+    };
 
     const handleSubmitForCreateTask = (event) => {
         event.preventDefault();
@@ -38,8 +53,11 @@ export default function CreateTask() {
         const values = {
             task_name: data.get('taskName'),
             task_description: data.get('taskDescription'),
+            preceeding_task_id: selectedPreceedingTask,
+            following_task_id: selectedFollowingTask,
             user_id: userID
         };
+        console.log(values);
         /* action dispatch - redux */
         dispatch(createTask(values, setErrorFlagForSubmit, navigate));
     }
@@ -77,29 +95,73 @@ export default function CreateTask() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
-                                        //defaultValue={user.username}
                                         required
                                         fullWidth
                                         id="taskName"
                                         label="Task Name"
                                         name="taskName"
                                         autoComplete="task-name"
-                                    //onChange={() => setErrorPasswordMatch(false)}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        //defaultValue={user.firstname}
+                                        required
                                         autoComplete="task-description"
                                         name="taskDescription"
-                                        required
                                         fullWidth
                                         id="taskDescription"
                                         label="Task Description"
                                         multiline={true}
                                         rows={3}
-                                    //onChange={() => setErrorPasswordMatch(false)}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="preceedingTaskLabel">Preceeding Task</InputLabel>
+                                        <Select
+                                            required
+                                            labelId="preceedingTaskLabel"
+                                            id="preceedingTask"
+                                            value={selectedPreceedingTask}
+                                            label="Select Preceeding Task"
+                                            onChange={handleSelectedPreceedingTask}
+                                        >
+                                            {
+                                                tasks.map((task) => (
+                                                    <MenuItem
+                                                        key={task._id}
+                                                        value={task._id}
+                                                    >
+                                                        {task.task_name}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="followingTaskLabel">Following Task</InputLabel>
+                                        <Select
+                                            required
+                                            labelId="followingTaskLabel"
+                                            id="followingTask"
+                                            value={selectedFollowingTask}
+                                            label="Select Following Task"
+                                            onChange={handleSelectedFollowingTask}
+                                        >
+                                            {
+                                                tasks.map((task) => (
+                                                    <MenuItem
+                                                        key={task._id}
+                                                        value={task._id}
+                                                    >
+                                                        {task.task_name}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
 
                             </Grid>
