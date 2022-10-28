@@ -57,7 +57,6 @@ export default function CreateTask() {
             following_task_id: selectedFollowingTask,
             user_id: userID
         };
-        console.log(values);
         /* action dispatch - redux */
         dispatch(createTask(values, setErrorFlagForSubmit, navigate));
     }

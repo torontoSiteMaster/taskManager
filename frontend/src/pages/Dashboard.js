@@ -134,8 +134,8 @@ const Dashboard = () => {
                                 //padding: '5px',
                                 //border: '1px solid'
                             }}
-                        //component={Link}
-                        //to={`/assigntask/${task._id}`}
+                            component={Link}
+                            to={`/invitetask/${task._id}`}
                         >
                             <span className={classes.assign}>Invite</span>
                         </IconButton>

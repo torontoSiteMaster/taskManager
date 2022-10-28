@@ -1,5 +1,6 @@
 const Task = require('../models/tasks');
 const AssignTask = require('../models/assign-tasks');
+const InviteTask = require('../models/invite-tasks');
 
 const createTask = async (req, res) => {
     try {
@@ -53,4 +54,20 @@ const getAllTasks = async (req, res) => {
     return res.status(200).json({ tasks });
 };
 
-module.exports = { createTask, getAllTasks, assignTaskCreate, getAssignTasks }; 
+// CREATE assign task to a user
+const inviteTaskCreate = async (req, res) => {
+    try {
+        const inviteTask = new InviteTask(req.body);
+        const { task_id } = req.body;
+        // Task exists check
+        const task = await Task.findOne({ _id: task_id }).exec();
+        if (!task) return res.status(400).send('Task does not exist!');
+
+        await inviteTask.save();
+        res.send('Task Invited Successfully')
+    } catch (error) {
+        return res.status(400).json(error);
+    }
+};
+
+module.exports = { createTask, getAllTasks, assignTaskCreate, getAssignTasks, inviteTaskCreate }; 

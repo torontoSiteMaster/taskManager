@@ -23,7 +23,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { logoutUser } from '../../../redux/actions/userActions';
 
 const pages = ['Users', 'Tasks', 'Add Task'];
-const pagesForStaff = ['Team', 'Tasks'];
+const pagesForStaff = ['Tasks', 'Team'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 const ResponsiveAppBar = () => {

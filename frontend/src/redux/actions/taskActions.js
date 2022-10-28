@@ -67,3 +67,23 @@ export const getAssignedTasks = () => async dispatch => {
         console.log(error);
     }
 };
+
+export const inviteTask = (values, setErrorFlagForSubmit, navigate) => async dispatch => {
+    dispatch({ type: 'LOADING', payload: true });
+    try {
+        await axios.post('/api/task/invite-task/new', values)
+            .then((response) => {
+                if (response.status === 200) {
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 2000);
+                    dispatch({ type: 'LOADING', payload: false });
+                }
+            })
+            .catch(() => setErrorFlagForSubmit(true));
+    } catch ({ error }) {
+        //console.log(error);
+        setErrorFlagForSubmit(true);
+        dispatch({ type: 'LOADING', payload: false });
+    }
+};
