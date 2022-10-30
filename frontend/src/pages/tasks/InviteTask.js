@@ -63,7 +63,7 @@ export default function CreateTask() {
             task_id: selectedTaskID,
             invitee_user_id: selectedInviteeUser
         };
-        console.log(values);
+        //console.log(values);
         /* action dispatch - redux */
         dispatch(inviteTask(values, setErrorFlagForSubmit, navigate));
     };
