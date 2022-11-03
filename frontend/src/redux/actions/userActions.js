@@ -48,8 +48,8 @@ export const logoutUser = () => async dispatch => {
     dispatch({ type: 'LOADING', payload: true });
     try {
         localStorage.removeItem('user');
-        const data = await axios.get('/api/user/logout');
-        console.log(data);
+        await axios.get('/api/user/logout');
+
         dispatch({ type: 'LOADING', payload: false });
     } catch (error) {
         dispatch({ type: 'LOADING', payload: false });

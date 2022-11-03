@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 /* ----------- */
-import { assignTask } from '../../redux/actions/taskActions';
+import { assignTask, getTasks } from '../../redux/actions/taskActions';
 /* ----------- */
 /* Material UI */
 /* ----------- */
@@ -24,6 +24,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { getUsers } from '../../redux/actions/userActions';
 
 const theme = createTheme();
 
@@ -39,6 +40,10 @@ export default function CreateTask() {
     const [selectedAssigneeUser, setSelectedAssigneeUser] = React.useState('');
 
     /* Getting the selected 'task' from the 'tasks' state in the redux store */
+    React.useEffect(() => {
+        dispatch(getTasks());
+        dispatch(getUsers());
+    }, [dispatch]);
     const { tasks } = useSelector(state => state.tasksReducer);
     const selectedTask = tasks.find(task => task._id === taskID);
     const { _id: selectedTaskID, task_name } = selectedTask;
@@ -58,7 +63,7 @@ export default function CreateTask() {
             task_id: selectedTaskID,
             assignee_user_id: selectedAssigneeUser
         };
-        console.log(values);
+        // console.log(values);
         /* action dispatch - redux */
         dispatch(assignTask(values, setErrorFlagForSubmit, navigate));
     };

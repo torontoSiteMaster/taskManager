@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 /* ----------- */
-import { inviteTask } from '../../redux/actions/taskActions';
+import { getTasks, inviteTask } from '../../redux/actions/taskActions';
 /* ----------- */
 /* Material UI */
 /* ----------- */
@@ -24,6 +24,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { getUsers } from '../../redux/actions/userActions';
 
 const theme = createTheme();
 
@@ -39,13 +40,17 @@ export default function CreateTask() {
     const [selectedInviteeUser, setSelectedInviteeUser] = React.useState('');
 
     /* Getting the selected 'task' from the 'tasks' state in the redux store */
+    React.useEffect(() => {
+        dispatch(getTasks());
+        dispatch(getUsers());
+    }, [dispatch]);
     const { tasks } = useSelector(state => state.tasksReducer);
     const selectedTask = tasks.find(task => task._id === taskID);
     const { _id: selectedTaskID, task_name } = selectedTask;
 
     /* Fetching all users to populate  */
     const { users } = useSelector(state => state.usersReducer);
-    console.log(users);
+
     /* Task to be invited from the team staff(invitee) list 
     excluding current user(Inviter) and the Manager (the task-assignor) */
     const teamStaffOfUsers = users.filter(user =>

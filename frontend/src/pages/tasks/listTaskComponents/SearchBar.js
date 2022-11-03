@@ -7,7 +7,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
 
-
 const SearchBar = (props) => {
     return (
         <Fragment>
